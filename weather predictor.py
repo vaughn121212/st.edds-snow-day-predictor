@@ -1,12 +1,12 @@
 import requests
 from datetime import datetime
 
-# Lakewood, Ohio coordinates
+# Lakewood
 LAT = 41.4820
 LON = -81.7982
 
 def get_weather_data():
-    # Step 1: Get NOAA grid info
+    
     points_url = f"https://api.weather.gov/points/{LAT},{LON}"
     points = requests.get(points_url, headers={"User-Agent": "SnowDayPredictor"}).json()
 
@@ -24,7 +24,7 @@ def analyze_weather(periods):
     overnight_snow = False
     snow_during_commute = False
 
-    for p in periods[:12]:  # next 12 hours
+    for p in periods[:12]: 
         temp = p["temperature"]
         wind = int(p["windSpeed"].split()[0])
         forecast = p["shortForecast"].lower()
@@ -34,7 +34,7 @@ def analyze_weather(periods):
         max_wind = max(max_wind, wind)
 
         if "snow" in forecast:
-            snow_inches += 0.75  # NOAA doesn't give inches → estimate
+            snow_inches += 0.75  
             if hour <= 6:
                 overnight_snow = True
             if 6 <= hour <= 9:
@@ -85,7 +85,7 @@ def snow_day_algorithm(weather, principal_mood):
     # Principal mood
     score += principal_mood * 10
 
-    # Lakewood / Ohio toughness
+    
     score -= 15
 
     score = max(0, min(score, 100))
@@ -102,7 +102,7 @@ def snow_day_algorithm(weather, principal_mood):
     return score, decision
 
 
-# ---------------- MAIN ----------------
+
 if __name__ == "__main__":
     print("Principal mood scale:")
     print("-2 = very strict | 0 = neutral | +2 = very chill")
